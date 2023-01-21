@@ -307,7 +307,7 @@ class HighResolutionNet(nn.Module):
         self.stage4, pre_stage_channels = self._make_stage(
             self.stage4_cfg, num_channels, multi_scale_output=True)
         
-        last_inp_channels = np.int(np.sum(pre_stage_channels))
+        #last_inp_channels = np.int(np.sum(pre_stage_channels))
 
         # self.last_layer = nn.Sequential(
         #     nn.Conv2d(
@@ -461,6 +461,7 @@ class HighResolutionNet(nn.Module):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
         # nn.init.constant_(self.last_layer[-1].bias, 19)
+        print(pretrained)
         if os.path.isfile(pretrained):
             pretrained_dict = torch.load(pretrained)
             logger.info('> loading pretrained model {}'.format(pretrained))

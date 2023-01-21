@@ -12,6 +12,8 @@ from eval import do_eval, get_eval_criteria
 torch.backends.cudnn.benchmark = True
 torch.autograd.set_detect_anomaly(True)
 
+os.environ["PL_TORCH_DISTRIBUTED_BACKEND"] = "gloo"
+
 num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
 distributed = num_gpus > 1
 
@@ -33,7 +35,7 @@ def parse_args():
     parser.add_argument('--embed_backbone', type=str,
                         default="hrnet48")
     parser.add_argument('--pretrained_model', type=str,
-                        default="./pretrained_models/HRNet_W48_C_ssld_pretrained.pth")
+                        default="pretrained_models/HRNet_W48_C_ssld_pretrained.pth")
     parser.add_argument("--local_rank", type=int, default=0)
     parser.add_argument("--log_step", type=int,
                         default=100,
@@ -77,7 +79,7 @@ def main():
     # Distributed Train Config
     torch.cuda.set_device(args.local_rank)
     torch.distributed.init_process_group(
-        backend="nccl", init_method="env://",
+        backend="gloo", init_method="env://",
     )
     device = torch.device('cuda:{}'.format(args.local_rank))
 

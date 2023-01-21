@@ -7,6 +7,7 @@ import numpy as np
 from xml.dom import minidom
 import xml.etree.ElementTree as ET
 import pandas as pd
+import signal
 from svgpathtools import parse_path
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(BASE_DIR, "../", ))
@@ -345,6 +346,7 @@ def svg2png(svg_path, png_path, background_color="white", scale=1):
     '''
     # cairosvg.svg2png(url=svg_path, write_to=png_path, background_color="white")
     command = "cairosvg {} -o {} -b {} -s {}".format(svg_path, png_path, background_color, scale)
+    print(command)
     os.system(command)
     time.sleep(0.03)
 

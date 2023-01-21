@@ -48,19 +48,19 @@ def main():
     zip_path = os.path.join(args.data_save_dir, "train.zip")
     unzip_dir = os.path.join(args.data_save_dir, "train")
     os.makedirs(unzip_dir, exist_ok=True)
-    cmd = f"unzip {zip_path} -d {unzip_dir}"
+    cmd = f"powershell -command \"Expand-Archive -Force {zip_path} {unzip_dir}\""
     os.system(cmd)
 
     zip_path = os.path.join(args.data_save_dir, "val.zip")
     unzip_dir = os.path.join(args.data_save_dir, "val")
     os.makedirs(unzip_dir, exist_ok=True)
-    cmd = f"unzip {zip_path} -d {unzip_dir}"
+    cmd = f"powershell -command \"Expand-Archive -Force {zip_path} {unzip_dir}\""
     os.system(cmd)
 
     zip_path = os.path.join(args.data_save_dir, "test.zip")
     unzip_dir = os.path.join(args.data_save_dir, "test")
     os.makedirs(unzip_dir, exist_ok=True)
-    cmd = f"unzip {zip_path} -d {unzip_dir}"
+    cmd = f"powershell -command \"Expand-Archive -Force {zip_path} {unzip_dir}\""
     os.system(cmd)
 
 if __name__ == '__main__':

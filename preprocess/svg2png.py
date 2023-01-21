@@ -6,7 +6,7 @@ import argparse
 from glob import glob
 from multiprocessing import Pool
 from functools import partial
-from _utils_dataset import *
+from utils_dataset import *
 
 def cvt_svg2png(svg_path, replace1, replace2, scale=7):
     '''Function: convert svg to png
@@ -18,12 +18,12 @@ def cvt_svg2png(svg_path, replace1, replace2, scale=7):
 def combine_trainset(dir0, dir1, dir_all):
     '''Function: Combine the two training subsets into one
     '''
-    files0 = glob(f"{dir0}/*.svg")
-    files1 = glob(f"{dir1}/*.svg")
+    files0 = glob(f"{dir0}\\*.svg")
+    files1 = glob(f"{dir1}\\*.svg")
     files0.extend(files1)
     for f in files0:
         basename = os.path.basename(f)
-        save_path = f"{dir_all}/{basename}"
+        save_path = f"{dir_all}\\{basename}"
         if os.path.exists(save_path):
             save_path = save_path.replace(".svg", "_1.svg")
             print(f"Duplicated:  > {save_path}")
@@ -98,40 +98,43 @@ def main():
     parser.add_argument('--thread_num', type=int, help='multiprocess number', default=32)
     args = parser.parse_args()
 
-    svg_dir = f"{args.data_save_dir}/svg"
-    png_dir = f"{args.data_save_dir}/png"
+    svg_dir = f"{args.data_save_dir}\\svg"
+    png_dir = f"{args.data_save_dir}\\png"
     os.makedirs(svg_dir, exist_ok=True)
     os.makedirs(png_dir, exist_ok=True)
-    os.makedirs(f"{svg_dir}/train", exist_ok=True)
-    os.makedirs(f"{svg_dir}/val", exist_ok=True)
-    os.makedirs(f"{svg_dir}/test", exist_ok=True)
-    os.makedirs(f"{png_dir}/train", exist_ok=True)
-    os.makedirs(f"{png_dir}/val", exist_ok=True)
-    os.makedirs(f"{png_dir}/test", exist_ok=True)
+    os.makedirs(f"{svg_dir}\\train", exist_ok=True)
+    os.makedirs(f"{svg_dir}\\val", exist_ok=True)
+    os.makedirs(f"{svg_dir}\\test", exist_ok=True)
+    os.makedirs(f"{png_dir}\\train", exist_ok=True)
+    os.makedirs(f"{png_dir}\\val", exist_ok=True)
+    os.makedirs(f"{png_dir}\\test", exist_ok=True)
 
     random.seed(args.seed)
 
-    src = f"{args.data_save_dir}/train/train/svg_gt/*.svg"
-    dst = f"{svg_dir}/train"
-    cmd = f"cp -r {src}  {dst}"
+    src = f"{args.data_save_dir}\\train\\train\\svg_gt\\*.svg"
+    dst = f"{svg_dir}\\train\\"
+    cmd = f"copy /y /v {src} {dst}"
+    print(f"Copy from: {src} to {dst}\n")
     os.system(cmd)
 
-    src = f"{args.data_save_dir}/val/val/svg_gt/*.svg"
-    dst = f"{svg_dir}/val"
-    cmd = f"cp -r {src}  {dst}"
+    src = f"{args.data_save_dir}\\val\\val\\svg_gt\\*.svg"
+    dst = f"{svg_dir}\\val\\"
+    cmd = f"copy /y /v {src} {dst}"
+    print(f"Copy from: {src} to {dst}\n")
     os.system(cmd)
 
-    src = f"{args.data_save_dir}/test/test/svg_gt/*.svg"
-    dst = f"{svg_dir}/test"
-    cmd = f"cp -r {src}  {dst}"
+    src = f"{args.data_save_dir}\\test\\test\\svg_gt\\*.svg"
+    dst = f"{svg_dir}\\test\\"
+    cmd = f"copy /y /v {src} {dst}"
+    print(f"Copy from: {src} to {dst}\n")
     os.system(cmd)
 
     # # # convert line color to black
     if args.cvt_color:
         print(f"[CVT Color] > to (0,0,0)")
-        svg_paths = glob(f"{svg_dir}/train/*.svg")
-        svg_paths.extend(glob(f"{svg_dir}/val/*.svg"))
-        svg_paths.extend(glob(f"{svg_dir}/test/*.svg"))
+        svg_paths = glob(f"{svg_dir}\\train\\*.svg")
+        svg_paths.extend(glob(f"{svg_dir}\\val\\*.svg"))
+        svg_paths.extend(glob(f"{svg_dir}\\test\\*.svg"))
         partial_func = partial(cvt_line_color)
         p = Pool(args.thread_num, init_worker)
         try:
@@ -145,12 +148,12 @@ def main():
     else:
         print('Not convert to black lines')
 
-    svg_paths = glob(f"{svg_dir}/train/*.svg")
-    svg_paths.extend(glob(f"{svg_dir}/val/*.svg"))
-    svg_paths.extend(glob(f"{svg_dir}/test/*.svg"))
+    svg_paths = glob(f"{svg_dir}\\train\\*.svg")
+    svg_paths.extend(glob(f"{svg_dir}\\val\\*.svg"))
+    svg_paths.extend(glob(f"{svg_dir}\\test\\*.svg"))
 
     print("svg > png")
-    partial_func = partial(cvt_svg2png, replace1="/svg/", replace2="/png/", scale=args.scale)
+    partial_func = partial(cvt_svg2png, replace1="\\svg\\", replace2="\\png\\", scale=args.scale)
     p = Pool(args.thread_num, init_worker)
     try:
         p.map(partial_func, svg_paths)
